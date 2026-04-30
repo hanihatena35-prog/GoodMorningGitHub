@@ -20,6 +20,13 @@ def is_valid_password(pw):
     """パスワードのバリデーション"""
     if len(pw) < 8:
         return False
+    # 英大文字、英小文字、数字を全て含む必要がある
+    if not re.search(r"[A-Z]", pw):
+        return False
+    if not re.search(r"[a-z]", pw):
+        return False
+    if not re.search(r"[0-9]", pw):
+        return False
     if not re.match(r"^[A-Za-z0-9]+$", pw):
         return False
     return True
@@ -76,10 +83,28 @@ def change_password():
         return redirect("/")
 
     if request.method == "POST":
-        new_pw = request.form["new_password"]
+        current_pw = request.form.get("current_password", "")
+        new_pw = request.form.get("new_password", "")
+        confirm_pw = request.form.get("confirm_password", "")
 
+        # 現在のパスワード検証
+        if current_pw != user_data["password"]:
+            flash("現在のパスワードが一致しません")
+            return render_template("change_password.html")
+
+        # 新しいパスワードと確認用パスワードの一致確認
+        if new_pw != confirm_pw:
+            flash("新しいパスワードと確認用パスワードが一致しません")
+            return render_template("change_password.html")
+
+        # 新旧パスワードが同じでないか確認
+        if new_pw == current_pw:
+            flash("新しいパスワードは現在のパスワードと異なるものを設定してください")
+            return render_template("change_password.html")
+
+        # パスワードバリデーション
         if not is_valid_password(new_pw):
-            flash("パスワードは8文字以上で英大文字・英小文字・数字のみ使用できます")
+            flash("パスワードは8文字以上で英大文字・英小文字・数字を含める必要があります")
             return render_template("change_password.html")
 
         user_data["password"] = new_pw
