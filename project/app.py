@@ -1,14 +1,36 @@
 from flask import Flask, render_template, request, redirect, session, flash
 from datetime import datetime, timedelta
 import re
+import os
 
 app = Flask(__name__)
 app.secret_key = "secret_key"
 
+PASSWORD_FILE = os.path.join(os.path.dirname(__file__), "Settings", "パスワード.txt")
+
+def load_password_from_file():
+    """パスワード.txtからパスワードを読み込む"""
+    if os.path.exists(PASSWORD_FILE):
+        try:
+            with open(PASSWORD_FILE, "r", encoding="utf-8") as f:
+                return f.read().strip()
+        except Exception:
+            return "Testpass1"  # デフォルトパスワード
+    return "Testpass1"  # デフォルトパスワード
+
+def save_password_to_file(password):
+    """パスワードをパスワード.txtに保存"""
+    try:
+        os.makedirs(os.path.dirname(PASSWORD_FILE), exist_ok=True)
+        with open(PASSWORD_FILE, "w", encoding="utf-8") as f:
+            f.write(password)
+    except Exception as e:
+        print(f"パスワード保存エラー: {e}")
+
 # 仮のユーザーデータ（本来はDB）
 user_data = {
     "username": "testuser",
-    "password": "Testpass1",
+    "password": load_password_from_file(),
     "password_updated": datetime.now() - timedelta(days=80)  # 80日前に更新 → 期限間近
 }
 
@@ -109,6 +131,9 @@ def change_password():
 
         user_data["password"] = new_pw
         user_data["password_updated"] = datetime.now()
+        
+        # パスワードをファイルに保存
+        save_password_to_file(new_pw)
 
         flash("パスワードを変更しました")
         return redirect("/home")
