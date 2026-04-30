@@ -1,7 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログイン</title>
+    <style>
+       /* 入力欄の基本スタイル　*/
+       input[type="text"],
+       input[type="password"] {
+          padding: 6px;
+          margin-bottom: 10px;
+       }
+       
+       /* PC向け（デフォルト）*/
+       .username-input {
+          width: 20em;    /* 全角20文字相当 */
+          max-width: 100%;
+       }
+
+       .password-input {
+          width: 15em;  /* 全角15文字相当 */
+          max-width: 100%;
+       }
+
+       /*　スマートフォン向け（縦長レイアウト） */
+       @media screen and (max-width: 600px) {
+        body {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px;
+        } 
+
+        form {
+          width: 100%;
+          max-width: 300px;        
+       }
+
+       input[type="text"],
+       input[type="password"] {
+          width: 100%;  /* 画面いっぱい */
+       }
+
+       button {
+          width: 100%;
+          margin-top: 10px;
+       }
+       }
+       </style>
 </head>
 <body>
     <h2>ログイン</h2>
@@ -16,11 +62,10 @@
     {% endwith %}
 
     <form method="POST">
-        <label>ユーザー名：</label>
-        <input type="text" name="username"><br>
-
-        <label>パスワード：</label>
-        <input type="password" name="password"><br>
+        <label>ユーザー名：</label><br>
+        <input type="text" name="username" class="username-input" maxlength="20"><br>
+        <label>パスワード：</label><br>
+        <input type="password" name="password" class="password-input" maxlength="15"><br>
 
         <button type="submit">ログイン</button>
         <button type="submit">キャンセル</button>
