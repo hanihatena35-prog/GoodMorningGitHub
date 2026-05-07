@@ -96,7 +96,7 @@ def login():
 def home():
     if "username" not in session:
         return redirect("/")
-    return render_template("home.html")
+    return render_template("index.html")
 
 
 @app.route("/change_password", methods=["GET", "POST"])
@@ -136,7 +136,7 @@ def change_password():
         save_password_to_file(new_pw)
 
         flash("パスワードを変更しました")
-        return redirect("/home")
+        return redirect("/index")
 
     return render_template("change_password.html")
 
