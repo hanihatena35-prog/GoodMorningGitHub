@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  login:
+    image: login:0.0.1
+    build:
+      context: .
+      dockerfile: ./Dockerfile.login
+    container_name: login-app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./Settings:/app/Settings
+      - ./templates:/app/templates
+    environment:
+      - FLASK_ENV=development
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
